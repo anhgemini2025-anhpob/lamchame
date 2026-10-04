@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Send, Phone, Mail, MessageSquare, CheckCircle2, Sparkles, ExternalLink } from 'lucide-react';
+import { X, Send, Phone, Mail, MessageSquare, CheckCircle2, Sparkles, ExternalLink, MapPin } from 'lucide-react';
 import { openExternalApp } from '../utils/navigation';
 
 interface ContactDrawerProps {
@@ -92,6 +92,27 @@ export const ContactDrawer: React.FC<ContactDrawerProps> = ({ isOpen, onClose })
               </div>
             </a>
           </div>
+
+          {/* Office Address Card */}
+          <a
+            href="https://www.google.com/maps/place/i2.32,+River+Park/@10.810246,106.7886395,17z/data=!3m1!4b1!4m6!3m5!1s0x317527e477a11af7:0x58dc05159773f648!8m2!3d10.810246!4d106.7912144!16s%2Fg%2F11spwrshw9?entry=ttu&g_ep=EgoyMDI2MDkzMC4wIKXMDSoASAFQAw%3D%3D"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3 rounded-2xl bg-[#0A192F] border border-slate-700 hover:border-amber-400 transition-colors flex items-start gap-2.5 group cursor-pointer"
+          >
+            <div className="p-2 rounded-xl bg-amber-400/10 text-amber-400 shrink-0 mt-0.5 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+              <MapPin className="w-4 h-4" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[11px] text-slate-400 font-semibold flex items-center justify-between">
+                <span>Địa chỉ văn phòng:</span>
+                <span className="text-amber-400 text-[10px] flex items-center gap-0.5 font-bold">Google Maps <ExternalLink className="w-2.5 h-2.5" /></span>
+              </div>
+              <div className="text-xs text-slate-200 group-hover:text-white mt-0.5 font-medium leading-snug">
+                i2-35 KDC River Park, Võ Chí Công, P. Phước Long, TPHCM.
+              </div>
+            </div>
+          </a>
 
           {/* Form */}
           {submitted ? (
