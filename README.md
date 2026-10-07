@@ -33,10 +33,49 @@ Trang Landing Page độc lập giới thiệu chuyên sâu trọn bộ 4 ứng 
 
 ---
 
+### 🗂️ CẤU TRÚC WEBSITE (React Router)
+| Đường dẫn | Trang |
+|---|---|
+| `/` | Trang Chủ |
+| `/ve-chung-toi` | Về Chúng Tôi (câu chuyện thương hiệu, Google Map) |
+| `/app/:slug` | Chi tiết từng ứng dụng + đánh giá phụ huynh |
+| `/admin` | Quản trị yêu cầu tư vấn & đánh giá |
+
+```
+src/
+├── App.tsx              # Khai báo router
+├── lib/supabase.ts      # Kết nối Supabase
+├── lib/AppsContext.tsx  # Tải dữ liệu 4 app từ bảng apps
+├── pages/               # HomePage, AboutPage, AppDetailPage, AdminPage
+├── components/          # Layout, Navbar, Footer, modal...
+└── data/appsData.ts     # Dữ liệu gốc (dùng để seed & dự phòng offline)
+supabase/schema.sql      # Tạo bảng + RLS + dữ liệu mẫu
+```
+
+### 🗄️ DATABASE SUPABASE
+1. Supabase → **SQL Editor** → dán toàn bộ `supabase/schema.sql` → **Run** (tạo 3 bảng `apps`, `consultations`, `reviews` + chính sách bảo mật + dữ liệu mẫu).
+2. **Authentication → Users → Add user** để tạo tài khoản admin (đăng nhập tại `/admin`).
+3. (Tuỳ chọn) đặt biến môi trường `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`; mặc định code dùng publishable key công khai của dự án.
+
+| Chức năng | Thao tác |
+|---|---|
+| Gửi yêu cầu tư vấn | INSERT `consultations` |
+| Viết đánh giá app | INSERT `reviews` |
+| Admin đổi trạng thái yêu cầu | UPDATE `consultations` |
+| Admin xóa yêu cầu / đánh giá | DELETE |
+
+### 📄 TÀI LIỆU
+- [`PRD.md`](PRD.md) — yêu cầu sản phẩm
+- [`DESIGN.md`](DESIGN.md) — hệ thống thiết kế
+- [`BAO_CAO.md`](BAO_CAO.md) — báo cáo đồ án
+
+---
+
 ### 💻 CÁCH KHỞI CHẠY VÀ TRIỂN KHAI:
 
 #### 1. Chạy thử nghiệm cục bộ (Local Development):
 ```bash
+npm install
 npm run dev
 ```
 Trang web sẽ chạy tại `http://localhost:5173/`.

@@ -1,17 +1,20 @@
 import React from 'react';
 import { ArrowUp, ExternalLink, Heart, MapPin, Phone, Mail } from 'lucide-react';
-import { LAMCHAME_APPS } from '../data/appsData';
+import { Link } from 'react-router-dom';
+import { useApps, useAppsSource } from '../lib/AppsContext';
 
 const GOOGLE_MAPS_LINK = "https://www.google.com/maps/place/i2.32,+River+Park/@10.810246,106.7886395,17z/data=!3m1!4b1!4m6!3m5!1s0x317527e477a11af7:0x58dc05159773f648!8m2!3d10.810246!4d106.7912144!16s%2Fg%2F11spwrshw9?entry=ttu&g_ep=EgoyMDI2MDkzMC4wIKXMDSoASAFQAw%3D%3D";
 const GOOGLE_MAPS_EMBED = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.784534884218!2d106.7886395!3d10.810246!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317527e477a11af7%3A0x58dc05159773f648!2si2.32%2C%20River%20Park!5e0!3m2!1svi!2svn!4v1710000000000!5m2!1svi!2svn";
 
 export const Footer: React.FC = () => {
+  const LAMCHAME_APPS = useApps();
+  const source = useAppsSource();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer id="about" className="bg-[#050B14] border-t border-amber-500/20 text-slate-300 text-sm">
+    <footer id="contact" className="bg-[#050B14] border-t border-amber-500/20 text-slate-300 text-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
@@ -37,6 +40,13 @@ export const Footer: React.FC = () => {
             <div className="text-xs text-amber-300/90 font-mono font-bold">
               "MONG MUỐN → Ý TƯỞNG → HIỆN THỰC"
             </div>
+
+            <nav className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm pt-1">
+              <Link to="/" className="text-slate-300 hover:text-amber-300">Trang Chủ</Link>
+              <Link to="/ve-chung-toi" className="text-slate-300 hover:text-amber-300">Về Chúng Tôi</Link>
+              <Link to="/app/nuoi-duong-be-0-60" className="text-slate-300 hover:text-amber-300">Chi Tiết App</Link>
+              <Link to="/admin" className="text-slate-500 hover:text-amber-300">Quản trị</Link>
+            </nav>
           </div>
 
           {/* Quick Links for 4 Apps */}
@@ -45,15 +55,12 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-sm">
               {LAMCHAME_APPS.map((app) => (
                 <li key={app.id}>
-                  <a
-                    href={app.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    to={`/app/${app.id}`}
                     className="text-slate-300 hover:text-amber-300 transition-colors flex items-center gap-1.5"
                   >
                     <span>App {app.number}: {app.name}</span>
-                    <ExternalLink className="w-3 h-3 text-slate-500" />
-                  </a>
+                  </Link>
                 </li>
               ))}
               <li className="pt-1">
@@ -147,7 +154,13 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm">
-          <div className="text-slate-400">
+          <div className="text-slate-400 flex flex-wrap items-center gap-2">
+            <span
+              className={`text-[11px] font-mono px-2 py-0.5 rounded border ${source === 'supabase' ? 'text-emerald-300 border-emerald-500/40 bg-emerald-950/30' : 'text-slate-400 border-slate-700'}`}
+              title="Nguồn dữ liệu ứng dụng"
+            >
+              {source === 'supabase' ? '● Dữ liệu: Supabase' : source === 'loading' ? '○ Đang tải dữ liệu...' : '○ Dữ liệu dự phòng (offline)'}
+            </span>
             © 2026 DUY ANH DIGITAL LAB • <a href="https://ungdung.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-amber-400 font-bold hover:underline">ungdung.vercel.app</a>
           </div>
 

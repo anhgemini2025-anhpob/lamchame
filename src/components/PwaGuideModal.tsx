@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Smartphone, Apple, Monitor, Download, CheckCircle2, ShieldCheck, WifiOff, ExternalLink } from 'lucide-react';
-import { LAMCHAME_APPS } from '../data/appsData';
+import { useApps } from '../lib/AppsContext';
 import { openExternalApp } from '../utils/navigation';
 
 interface PwaGuideModalProps {
@@ -9,6 +9,7 @@ interface PwaGuideModalProps {
 }
 
 export const PwaGuideModal: React.FC<PwaGuideModalProps> = ({ isOpen, onClose }) => {
+  const LAMCHAME_APPS = useApps();
   const [platform, setPlatform] = useState<'ios' | 'android' | 'desktop'>('ios');
 
   if (!isOpen) return null;

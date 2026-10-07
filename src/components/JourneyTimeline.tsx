@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckCircle2, XCircle, ArrowRight, Sparkles, Shield, Compass, BookOpen, Heart } from 'lucide-react';
-import { LAMCHAME_APPS, AppItem } from '../data/appsData';
+import { AppItem } from '../data/appsData';
+import { useApps } from '../lib/AppsContext';
 
 interface JourneyTimelineProps {
   onScrollToApp: (appId: string) => void;
@@ -11,6 +12,7 @@ export const JourneyTimeline: React.FC<JourneyTimelineProps> = ({
   onScrollToApp,
   onOpenVideoTour
 }) => {
+  const LAMCHAME_APPS = useApps();
   return (
     <section id="journey" className="py-20 bg-[#07111E] border-t border-slate-800/80 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

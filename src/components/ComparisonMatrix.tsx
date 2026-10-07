@@ -1,9 +1,10 @@
 import React from 'react';
 import { Check, ExternalLink, Sparkles, HelpCircle } from 'lucide-react';
-import { LAMCHAME_APPS } from '../data/appsData';
+import { useApps } from '../lib/AppsContext';
 import { openExternalApp } from '../utils/navigation';
 
 export const ComparisonMatrix: React.FC = () => {
+  const LAMCHAME_APPS = useApps();
   return (
     <section id="comparison" className="py-20 bg-[#07111E] border-t border-slate-800 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,34 +1,64 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 import { X, Send, Phone, Mail, MessageSquare, CheckCircle2, Sparkles, ExternalLink, MapPin } from 'lucide-react';
 import { openExternalApp } from '../utils/navigation';
 
 interface ContactDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultAppId?: string;
 }
 
-export const ContactDrawer: React.FC<ContactDrawerProps> = ({ isOpen, onClose }) => {
+const TOPIC_TO_APP: Record<string, string | null> = {
+  both: null,
+  app1: 'nuoi-duong-be-0-60',
+  app2: 'nuoi-day-tre-6-11',
+  app3: 'thau-hieu-thieu-nien-12-15',
+  app4: 'dinh-huong-thanh-nien-16-18',
+  custom: null,
+};
+
+export const ContactDrawer: React.FC<ContactDrawerProps> = ({ isOpen, onClose, defaultAppId }) => {
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
   const [topic, setTopic] = useState('both');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+
+  // Mở từ trang Chi tiết app -> tự chọn sẵn chủ đề app đó
+  useEffect(() => {
+    if (!isOpen) return;
+    const key = Object.keys(TOPIC_TO_APP).find((k) => TOPIC_TO_APP[k] === defaultAppId);
+    setTopic(key || 'both');
+    setError('');
+  }, [isOpen, defaultAppId]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // CREATE: lưu yêu cầu tư vấn vào bảng Supabase "consultations"
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Construct message to send via Zalo or mailto
-    const subject = encodeURIComponent(`[Duy Anh Lab - Làm Cha Mẹ] Liên hệ từ ${name || 'Khách hàng'}`);
-    const body = encodeURIComponent(
-      `Họ và tên: ${name}\nThông tin liên hệ (SĐT/Zalo/Email): ${contact}\nChủ đề quan tâm: ${topic}\nNội dung trao đổi:\n${message}`
-    );
-
-    const zaloUrl = `https://zalo.me/84908095693`;
-    window.open(`mailto:anhpob@gmail.com?subject=${subject}&body=${body}`, '_blank');
-    
+    setSending(true);
+    setError('');
+    const { error: dbError } = await supabase.from('consultations').insert({
+      full_name: name.trim(),
+      contact: contact.trim(),
+      topic,
+      app_id: TOPIC_TO_APP[topic],
+      message: message.trim(),
+    });
+    setSending(false);
+    if (dbError) {
+      console.error(dbError);
+      setError('Chưa gửi được yêu cầu (' + dbError.message + '). Vui lòng thử lại hoặc liên hệ Zalo.');
+      return;
+    }
     setSubmitted(true);
+    setName('');
+    setContact('');
+    setMessage('');
     setTimeout(() => {
       setSubmitted(false);
       onClose();
@@ -120,7 +150,7 @@ export const ContactDrawer: React.FC<ContactDrawerProps> = ({ isOpen, onClose })
               <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
               <h4 className="text-base font-extrabold text-white">Yêu Cầu Đã Được Ghi Nhận!</h4>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Cảm ơn bạn đã gửi thông tin. Đội ngũ kỹ thuật Duy Anh Lab sẽ phản hồi bạn qua Zalo hoặc Email trong thời gian sớm nhất.
+                Yêu cầu đã được lưu vào hệ thống. Đội ngũ kỹ thuật Duy Anh Lab sẽ phản hồi bạn qua Zalo hoặc Email trong thời gian sớm nhất.
               </p>
             </div>
           ) : (
@@ -186,12 +216,17 @@ export const ContactDrawer: React.FC<ContactDrawerProps> = ({ isOpen, onClose })
                 />
               </div>
 
+              {error && (
+                <p className="text-xs text-rose-300 bg-rose-950/40 border border-rose-500/40 rounded-lg p-2.5">{error}</p>
+              )}
+
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-xl font-extrabold text-sm text-slate-950 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-400 transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 cursor-pointer"
+                disabled={sending}
+                className="disabled:opacity-60 w-full py-3.5 rounded-xl font-extrabold text-sm text-slate-950 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-400 transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Send className="w-4 h-4" />
-                <span>Gửi Yêu Cầu Trao Đổi Ngay</span>
+                <span>{sending ? 'Đang gửi...' : 'Gửi Yêu Cầu Trao Đổi Ngay'}</span>
               </button>
 
             </form>

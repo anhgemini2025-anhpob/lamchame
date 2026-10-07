@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { Sparkles, Download, Menu, X, ArrowUpRight, Phone, MessageSquare } from 'lucide-react';
-import { LAMCHAME_APPS } from '../data/appsData';
+import { useApps } from '../lib/AppsContext';
 
 interface NavbarProps {
   onOpenPwaGuide: () => void;
@@ -8,6 +9,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenPwaGuide, onOpenContactDrawer }) => {
+  const LAMCHAME_APPS = useApps();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -31,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPwaGuide, onOpenContactDra
         <div className="flex items-center justify-between gap-4">
           
           {/* Brand Logo & Tagline */}
-          <a href="#" className="flex items-center gap-3 group shrink-0">
+          <Link to="/" className="flex items-center gap-3 group shrink-0">
             <div className="p-1 rounded-xl bg-[#0A192F] border border-amber-400/40 shadow-md group-hover:border-amber-400 transition-colors">
               <img
                 src="/brand/logo.jpg"
@@ -52,32 +54,33 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPwaGuide, onOpenContactDra
                 Hệ Sinh Thái 4 App Làm Cha Mẹ (0–18 Tuổi)
               </div>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-            <a
-              href="#journey"
-              className="px-3 py-1.5 rounded-lg text-xs xl:text-sm font-semibold text-slate-300 hover:text-amber-300 hover:bg-[#0E223D] transition-colors"
-            >
-              Hành Trình 0-18T
-            </a>
+            <NavLink to="/" end className={({ isActive }) => `px-3 py-1.5 rounded-lg text-xs xl:text-sm font-semibold transition-colors ${isActive ? 'text-amber-300 bg-[#0E223D]' : 'text-slate-300 hover:text-amber-300 hover:bg-[#0E223D]'}`}>
+              Trang Chủ
+            </NavLink>
+            <NavLink to="/ve-chung-toi" className={({ isActive }) => `px-3 py-1.5 rounded-lg text-xs xl:text-sm font-semibold transition-colors ${isActive ? 'text-amber-300 bg-[#0E223D]' : 'text-slate-300 hover:text-amber-300 hover:bg-[#0E223D]'}`}>
+              Về Chúng Tôi
+            </NavLink>
             {LAMCHAME_APPS.map((app) => (
-              <a
+              <NavLink
                 key={app.id}
-                href={`#app-${app.id}`}
-                className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-amber-300 hover:bg-[#0E223D] transition-colors flex items-center gap-1.5"
+                to={`/app/${app.id}`}
+                title={app.name}
+                className={({ isActive }) => `px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${isActive ? 'text-amber-300 bg-[#0E223D]' : 'text-slate-300 hover:text-amber-300 hover:bg-[#0E223D]'}`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                <span>{app.stageName} ({app.number})</span>
-              </a>
+                <span>App {app.number}</span>
+              </NavLink>
             ))}
-            <a
-              href="#comparison"
+            <Link
+              to="/#comparison"
               className="px-3 py-1.5 rounded-lg text-xs xl:text-sm font-semibold text-slate-300 hover:text-amber-300 hover:bg-[#0E223D] transition-colors"
             >
               So Sánh
-            </a>
+            </Link>
             <a
               href="https://ungdung.vercel.app/"
               target="_blank"
@@ -123,13 +126,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPwaGuide, onOpenContactDra
         {/* Mobile Dropdown Menu */}
         {isMobileMenuOpen && (
           <div className="lg:hidden mt-3 pt-3 border-t border-slate-800 pb-2 space-y-1.5 animate-fadeIn">
+            <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-200 hover:bg-[#0E223D] hover:text-amber-300">
+              Trang Chủ
+            </Link>
+            <Link to="/ve-chung-toi" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-200 hover:bg-[#0E223D] hover:text-amber-300">
+              Về Chúng Tôi
+            </Link>
             <div className="text-[11px] font-mono uppercase tracking-wider text-amber-400 px-3 py-1 font-bold">
               4 Ứng Dụng Trong Hệ Sinh Thái
             </div>
             {LAMCHAME_APPS.map((app) => (
-              <a
+              <Link
                 key={app.id}
-                href={`#app-${app.id}`}
+                to={`/app/${app.id}`}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-semibold text-slate-200 hover:bg-[#0E223D] hover:text-amber-300"
               >
@@ -140,7 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenPwaGuide, onOpenContactDra
                   <span>{app.name}</span>
                 </div>
                 <span className="text-xs text-slate-400">{app.ageRange}</span>
-              </a>
+              </Link>
             ))}
 
             <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">

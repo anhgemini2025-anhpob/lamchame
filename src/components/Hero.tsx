@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Play, Sparkles, ShieldCheck, WifiOff, Smartphone, Award, ArrowRight, Heart, Users, ChevronRight } from 'lucide-react';
-import { LAMCHAME_APPS, AppItem } from '../data/appsData';
+import { AppItem } from '../data/appsData';
+import { useApps } from '../lib/AppsContext';
 import { openExternalApp } from '../utils/navigation';
 
 interface HeroProps {
@@ -16,6 +17,7 @@ export const Hero: React.FC<HeroProps> = ({
   onOpenPwaGuide,
   onScrollToApp
 }) => {
+  const LAMCHAME_APPS = useApps();
   const [activeStageIdx, setActiveStageIdx] = useState(0);
   const activeApp = LAMCHAME_APPS[activeStageIdx];
 
